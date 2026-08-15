@@ -1,4 +1,5 @@
 import flet as ft
+from flet import padding, margin
 import time
 import threading
 import os
@@ -61,7 +62,9 @@ def main(page: ft.Page):
     page.window.resizable = False
     page.vertical_alignment = ft.MainAxisAlignment.START
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    page.padding = ft.padding.only(top=48, left=24, right=24, bottom=16)
+    
+    # Define espaçamento: left, top, right, bottom
+    page.padding = padding.only(top=48, left=24, right=24, bottom=16)
 
     def ao_clicar(e, canal):
         if canal == "Globo":
@@ -121,7 +124,7 @@ def main(page: ft.Page):
 
     footer = ft.Container(
         content=ft.Text("Controle Remoto de Canais", color="#475569", size=11),
-        margin=ft.margin.only(top=10, bottom=10)
+        margin=margin.only(top=10, bottom=10)
     )
 
     page.add(header, ft.Container(height=16), grid, footer)

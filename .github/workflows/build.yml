@@ -45,8 +45,10 @@ jobs:
         run: pip install flet
 
       - name: Gerar APK
+        env:
+          FLET_CLI_YES: "true"
         run: |
-          flet build apk --no-interactive
+          yes | flet build apk
 
       - name: Disponibilizar APK para Download
         uses: actions/upload-artifact@v4

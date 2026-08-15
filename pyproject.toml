@@ -1,0 +1,13 @@
+[project]
+name = "auto-tv"
+version = "0.1.0"
+dependencies = [
+    "flet",
+    "adb-shell",
+    "certifi",
+    "rsa",
+]
+
+[tool.flet]
+product_name = "Auto TV"
+icon = "assets/icon.png"

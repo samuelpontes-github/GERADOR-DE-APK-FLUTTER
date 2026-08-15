@@ -1,0 +1,43 @@
+name: Build Flet APK
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Instalar dependências e Flet
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build cmake
+          pip install flet
+
+      - name: Gerar APK
+        env:
+          FLET_CLI_YES: "true"
+        run: |
+          flet build apk
+
+      - name: Disponibilizar APK para Download
+        uses: actions/upload-artifact@v4
+        with:
+          name: controle-remoto-apk
+          path: build/apk/*.apk

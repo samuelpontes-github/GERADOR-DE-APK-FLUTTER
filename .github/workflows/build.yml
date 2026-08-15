@@ -18,17 +18,26 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Instalar Java
+      - name: Instalar Java 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Instalar dependências e Flet
+      - name: Instalar Android SDK e ferramentas de build
+        uses: android-actions/setup-android@v3
+
+      - name: Aceitar Licenças do Android SDK
+        run: yes | sdkmanager --licenses || true
+
+      - name: Instalar dependências de sistema (Ninja e CMake)
         run: |
           sudo apt-get update
-          sudo apt-get install -y ninja-build cmake
-          pip install flet
+          sudo apt-get install -y ninja-build cmake git
+          git config --global --add safe.directory "*"
+
+      - name: Instalar Flet
+        run: pip install flet
 
       - name: Gerar APK
         env:

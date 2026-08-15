@@ -48,10 +48,13 @@ jobs:
         env:
           FLET_CLI_YES: "true"
         run: |
-          yes | flet build apk
+          yes | flet build apk \
+            --product-name "Auto TV" \
+            --icon "assets/icon.png" \
+            --requirements flet,adb-shell,certifi,rsa
 
       - name: Disponibilizar APK para Download
         uses: actions/upload-artifact@v4
         with:
-          name: controle-remoto-apk
+          name: Auto-TV-APK
           path: build/apk/*.apk

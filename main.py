@@ -59,9 +59,9 @@ def main(page: ft.Page):
     page.window.width = 400
     page.window.height = 700
     page.window.resizable = False
-    page.vertical_alignment = ft.MainAxisAlignment.SPACE_BETWEEN
+    page.vertical_alignment = ft.MainAxisAlignment.START
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    page.padding = 24
+    page.padding = ft.padding.only(top=48, left=24, right=24, bottom=16)
 
     def ao_clicar(e, canal):
         if canal == "Globo":
@@ -119,7 +119,11 @@ def main(page: ft.Page):
         expand=True
     )
 
-    footer = ft.Text("Controle Remoto de Canais", color="#475569", size=11)
-    page.add(header, grid, footer)
+    footer = ft.Container(
+        content=ft.Text("Controle Remoto de Canais", color="#475569", size=11),
+        margin=ft.margin.only(top=10, bottom=10)
+    )
+
+    page.add(header, ft.Container(height=16), grid, footer)
 
 ft.app(target=main, assets_dir="assets")

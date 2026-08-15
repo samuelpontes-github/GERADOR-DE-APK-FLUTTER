@@ -32,7 +32,7 @@ def abrir_globo():
             device.shell("am force-stop com.globo.globotv")
             time.sleep(2)
             device.shell("am start -n com.globo.globotv/.maintv.MainActivity")
-            time.sleep(15)
+            time.sleep(6)
             
             # Navegação no app
             device.shell("input keyevent 66")

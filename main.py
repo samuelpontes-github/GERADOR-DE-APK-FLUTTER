@@ -1,5 +1,4 @@
 import flet as ft
-from flet import padding, margin
 import time
 import threading
 import os
@@ -33,11 +32,11 @@ def abrir_globo():
             device.shell("am force-stop com.globo.globotv")
             time.sleep(2)
             device.shell("am start -n com.globo.globotv/.maintv.MainActivity")
-            time.sleep(6)
+            time.sleep(15)
             
             # Navegação no app
             device.shell("input keyevent 66")
-            time.sleep(8)
+            time.sleep(6)
             device.shell("input keyevent 21")
             time.sleep(0.2)
             device.shell("input keyevent 21")
@@ -63,8 +62,8 @@ def main(page: ft.Page):
     page.vertical_alignment = ft.MainAxisAlignment.START
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     
-    # Define espaçamento: left, top, right, bottom
-    page.padding = padding.only(top=48, left=24, right=24, bottom=16)
+    # Define espaçamento: left=24, top=48, right=24, bottom=16
+    page.padding = ft.Padding(24, 48, 24, 16)
 
     def ao_clicar(e, canal):
         if canal == "Globo":
@@ -124,7 +123,7 @@ def main(page: ft.Page):
 
     footer = ft.Container(
         content=ft.Text("Controle Remoto de Canais", color="#475569", size=11),
-        margin=margin.only(top=10, bottom=10)
+        margin=ft.Margin(0, 10, 0, 10)
     )
 
     page.add(header, ft.Container(height=16), grid, footer)

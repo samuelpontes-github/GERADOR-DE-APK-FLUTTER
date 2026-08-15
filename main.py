@@ -32,7 +32,7 @@ def abrir_globo():
             device.shell("am force-stop com.globo.globotv")
             time.sleep(2)
             device.shell("am start -n com.globo.globotv/.maintv.MainActivity")
-            time.sleep(6)
+            time.sleep(15)
             
             # Navegação no app
             device.shell("input keyevent 66")
@@ -71,12 +71,12 @@ def main(page: ft.Page):
         return ft.Container(
             content=ft.Column(
                 controls=[
-                    ft.Text(nome, size=18, weight=ft.FontWeight.BOLD, color="white"),
-                    ft.Image(src=caminho_imagem, fit="contain", height=70),
+                    ft.Text(nome, size=16, weight=ft.FontWeight.BOLD, color="white"),
+                    ft.Image(src=caminho_imagem, fit="contain", expand=True),
                 ],
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 alignment=ft.MainAxisAlignment.CENTER,
-                spacing=8
+                spacing=6
             ),
             gradient=ft.LinearGradient(
                 begin=ft.Alignment(-1, -1),
@@ -84,7 +84,7 @@ def main(page: ft.Page):
                 colors=cores
             ),
             border_radius=20,
-            padding=10,
+            padding=12,
             on_click=lambda e: ao_clicar(e, nome),
             border=ft.Border.all(2, border_color) if border_color else None,
             shadow=ft.BoxShadow(spread_radius=1, blur_radius=10, color="#000000")
@@ -106,8 +106,8 @@ def main(page: ft.Page):
     )
 
     grid = ft.GridView(
-        runs_count=2,
-        max_extent=160,
+        cross_axis_count=2,
+        child_aspect_ratio=1.0,
         spacing=14,
         run_spacing=14,
         controls=[

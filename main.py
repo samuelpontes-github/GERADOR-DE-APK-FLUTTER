@@ -1,28 +1,55 @@
 import flet as ft
-import subprocess
 import time
 import threading
+import os
+from adb_shell.adb_device import AdbDeviceTcp
+from adb_shell.auth.keygen import keygen
+from adb_shell.auth.sign_pythonrsa import PythonRSASigner
 
 def abrir_globo():
     ip_tv = "192.168.15.117"
+    port = 5555
     
     def executar_adb():
-        subprocess.run(f"adb connect {ip_tv}", shell=True)
-        subprocess.run("adb shell am force-stop com.globo.globotv", shell=True)
-        time.sleep(2)
-        subprocess.run("adb shell am start -n com.globo.globotv/.maintv.MainActivity", shell=True)
-        time.sleep(6)
-        subprocess.run("adb shell input keyevent 66", shell=True)
-        time.sleep(8)
-        subprocess.run("adb shell input keyevent 21", shell=True)
-        time.sleep(0.2)
-        subprocess.run("adb shell input keyevent 21", shell=True)
-        time.sleep(0.2)
-        subprocess.run("adb shell input keyevent 21", shell=True)
-        time.sleep(1)
-        subprocess.run("adb shell input keyevent 20", shell=True)
-        time.sleep(1)
-        subprocess.run("adb shell input keyevent 66", shell=True)
+        try:
+            # Gerenciar chaves de autenticação ADB necessárias para o Android
+            key_path = "adbkey"
+            if not os.path.exists(key_path):
+                keygen(key_path)
+            
+            with open(key_path, 'rb') as f:
+                priv = f.read()
+            with open(key_path + '.pub', 'rb') as f:
+                pub = f.read()
+                
+            signer = PythonRSASigner(pub, priv)
+
+            # Conecta na TV via ADB
+            device = AdbDeviceTcp(ip_tv, port, default_transport_timeout_s=9)
+            device.connect(rsa_keys=[signer], auth_timeout_s=5)
+            
+            # Executa a sequência de automação
+            device.shell("am force-stop com.globo.globotv")
+            time.sleep(2)
+            device.shell("am start -n com.globo.globotv/.maintv.MainActivity")
+            time.sleep(6)
+            
+            # Navegação no app
+            device.shell("input keyevent 66")
+            time.sleep(8)
+            device.shell("input keyevent 21")
+            time.sleep(0.2)
+            device.shell("input keyevent 21")
+            time.sleep(0.2)
+            device.shell("input keyevent 21")
+            time.sleep(1)
+            device.shell("input keyevent 20")
+            time.sleep(1)
+            device.shell("input keyevent 66")
+            
+            device.close()
+        except Exception as err:
+            print(f"Erro no ADB: {err}")
 
     threading.Thread(target=executar_adb, daemon=True).start()
 
@@ -84,7 +111,6 @@ def main(page: ft.Page):
         spacing=14,
         run_spacing=14,
         controls=[
-            # Caminhos relativos apontando para os arquivos dentro de 'assets'
             criar_card("Globo", "/TV GLOBO LOGO.png", ["#1d4ed8", "#1e40af"], "#60a5fa"),
             criar_card("Record", "/RECORD LOGO.png", ["#1f2937", "#111827"], "#9ca3af"),
             criar_card("SBT", "/LOGO SBT.png", ["#d97706", "#b45309"], "#fbbf24"),
@@ -96,5 +122,4 @@ def main(page: ft.Page):
     footer = ft.Text("Controle Remoto de Canais", color="#475569", size=11)
     page.add(header, grid, footer)
 
-# Declaração da pasta de assets para empacotamento no APK
 ft.app(target=main, assets_dir="assets")

@@ -24,7 +24,12 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Instalar Android SDK e ferramentas de build
+      - name: Instalar Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Instalar Android SDK e Ferramentas
         uses: android-actions/setup-android@v3
 
       - name: Aceitar Licenças do Android SDK
@@ -40,10 +45,8 @@ jobs:
         run: pip install flet
 
       - name: Gerar APK
-        env:
-          FLET_CLI_YES: "true"
         run: |
-          flet build apk
+          flet build apk --no-interactive
 
       - name: Disponibilizar APK para Download
         uses: actions/upload-artifact@v4

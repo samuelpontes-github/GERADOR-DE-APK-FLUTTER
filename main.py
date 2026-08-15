@@ -106,7 +106,7 @@ def main(page: ft.Page):
     )
 
     grid = ft.GridView(
-        cross_axis_count=2,
+        runs_count=2,
         child_aspect_ratio=1.0,
         spacing=14,
         run_spacing=14,

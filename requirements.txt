@@ -1,6 +1,8 @@
 flet
 adb-shell
-certifi
-rsa
 google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
+rsa
+certifi
 urllib3

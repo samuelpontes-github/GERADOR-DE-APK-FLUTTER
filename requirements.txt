@@ -2,3 +2,6 @@ flet
 adb-shell
 certifi
 rsa
+uiautomator2
+google-api-python-client
+urllib3

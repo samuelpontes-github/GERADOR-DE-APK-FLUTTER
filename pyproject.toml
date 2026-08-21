@@ -11,3 +11,6 @@ dependencies = [
 [tool.flet]
 product_name = "Auto TV"
 icon = "assets/icon.png"
+
+[tool.flet.flutter.dependencies]
+wakelock_plus = "^1.2.8"

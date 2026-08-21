@@ -2,7 +2,8 @@ import flet as ft
 import time
 import threading
 import os
-from googleapiclient.discovery import build
+import json
+import urllib.request
 from adb_shell.adb_device import AdbDeviceTcp
 from adb_shell.auth.keygen import keygen
 from adb_shell.auth.sign_pythonrsa import PythonRSASigner
@@ -12,8 +13,6 @@ YOUTUBE_API_KEY = "AIzaSyDV_xrdplJuun_HcFivLnIW-KPgpldb5pQ"
 IP_TV = "192.168.15.117"
 PORT = 5555
 CHANNEL_ID_CAZETV = "UClXz2Nus3ASfscB60dC5gxQ"
-
-youtube_client = build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
 
 
 def abrir_canal_cazetv_na_tv():
@@ -52,30 +51,31 @@ def abrir_canal_cazetv_na_tv():
 
 
 def obter_lives_cazetv_api():
-    """Busca diretamente na API do YouTube todas as transmissões ao vivo ativas no canal da CazéTV."""
+    """Busca diretamente na API do YouTube todas as transmissões ao vivo ativas usando urllib nativo."""
     lives = []
     try:
-        print("Consultando lives ativas via API do YouTube...")
-        request = youtube_client.search().list(
-            part="snippet",
-            channelId=CHANNEL_ID_CAZETV,
-            type="video",
-            eventType="live",
-            maxResults=5
+        print("Consultando lives ativas via API HTTP do YouTube...")
+        url_api = (
+            f"https://www.googleapis.com/youtube/v3/search"
+            f"?part=snippet&channelId={CHANNEL_ID_CAZETV}"
+            f"&type=video&eventType=live&maxResults=5&key={YOUTUBE_API_KEY}"
         )
-        response = request.execute()
-        items = response.get('items', [])
+        
+        req = urllib.request.Request(url_api, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req) as response:
+            data = json.loads(response.read().decode('utf-8'))
+            items = data.get('items', [])
 
-        for item in items:
-            video_id = item['id']['videoId']
-            titulo = item['snippet']['title']
-            url_video = f"https://www.youtube.com/watch?v={video_id}"
+            for item in items:
+                video_id = item['id']['videoId']
+                titulo = item['snippet']['title']
+                url_video = f"https://www.youtube.com/watch?v={video_id}"
 
-            if titulo.upper() != "CAZÉTV LIVE":
-                lives.append({
-                    "titulo": titulo,
-                    "url": url_video
-                })
+                if titulo.upper() != "CAZÉTV LIVE":
+                    lives.append({
+                        "titulo": titulo,
+                        "url": url_video
+                    })
         return lives
     except Exception as e:
         print(f"Erro na API do YouTube: {e}")

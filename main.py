@@ -15,34 +15,34 @@ PORT = 5555
 CHANNEL_ID_CAZETV = "UClXz2Nus3ASfscB60dC5gxQ"
 
 
+def conectar_adb():
+    """Gera chave e conecta ao dispositivo ADB na TV."""
+    key_path = "adbkey"
+    if not os.path.exists(key_path):
+        keygen(key_path)
+
+    with open(key_path, 'rb') as f:
+        priv = f.read()
+    with open(key_path + '.pub', 'rb') as f:
+        pub = f.read()
+
+    signer = PythonRSASigner(pub, priv)
+    device = AdbDeviceTcp(IP_TV, PORT, default_transport_timeout_s=9)
+    device.connect(rsa_keys=[signer], auth_timeout_s=5)
+    return device
+
+
 def abrir_canal_cazetv_na_tv():
-    """Comanda a TV via ADB para abrir a página da CazéTV diretamente no YouTube Oficial, aguarda o carregamento e navega para baixo."""
     def worker():
         try:
             print("Abrindo canal da CazéTV na TV via YouTube Oficial...")
-            key_path = "adbkey"
-            if not os.path.exists(key_path):
-                keygen(key_path)
-
-            with open(key_path, 'rb') as f:
-                priv = f.read()
-            with open(key_path + '.pub', 'rb') as f:
-                pub = f.read()
-
-            signer = PythonRSASigner(pub, priv)
-            device = AdbDeviceTcp(IP_TV, PORT, default_transport_timeout_s=9)
-            device.connect(rsa_keys=[signer], auth_timeout_s=5)
-
+            device = conectar_adb()
             url_canal = f"https://www.youtube.com/channel/{CHANNEL_ID_CAZETV}"
             comando_abrir = f'am start -a android.intent.action.VIEW -d "{url_canal}" com.google.android.youtube.tv'
             device.shell(comando_abrir)
             
-            # Aguarda 8 segundos para o canal carregar
             time.sleep(8)
-            
-            # Envia a seta para baixo (KEYCODE_DPAD_DOWN = 20)
             device.shell("input keyevent 20")
-
             device.close()
         except Exception as err:
             print(f"Erro ao abrir canal na TV: {err}")
@@ -51,7 +51,6 @@ def abrir_canal_cazetv_na_tv():
 
 
 def obter_lives_cazetv_api():
-    """Busca diretamente na API do YouTube todas as transmissões ao vivo ativas usando urllib nativo."""
     lives = []
     try:
         print("Consultando lives ativas via API HTTP do YouTube...")
@@ -83,23 +82,10 @@ def obter_lives_cazetv_api():
 
 
 def abrir_video_na_tv(url_video):
-    """Abre a URL enviada diretamente no aplicativo do YouTube Oficial da TV via ADB."""
     def worker():
         try:
             print(f"🔴 Abrindo jogo selecionado na TV: {url_video}")
-            key_path = "adbkey"
-            if not os.path.exists(key_path):
-                keygen(key_path)
-
-            with open(key_path, 'rb') as f:
-                priv = f.read()
-            with open(key_path + '.pub', 'rb') as f:
-                pub = f.read()
-
-            signer = PythonRSASigner(pub, priv)
-            device = AdbDeviceTcp(IP_TV, PORT, default_transport_timeout_s=9)
-            device.connect(rsa_keys=[signer], auth_timeout_s=5)
-
+            device = conectar_adb()
             device.shell(f'am start -a android.intent.action.VIEW -d "{url_video}" com.google.android.youtube.tv')
             device.close()
             print("Transmissão iniciada!")
@@ -112,19 +98,7 @@ def abrir_video_na_tv(url_video):
 def abrir_globo():
     def executar_adb():
         try:
-            key_path = "adbkey"
-            if not os.path.exists(key_path):
-                keygen(key_path)
-
-            with open(key_path, 'rb') as f:
-                priv = f.read()
-            with open(key_path + '.pub', 'rb') as f:
-                pub = f.read()
-
-            signer = PythonRSASigner(pub, priv)
-            device = AdbDeviceTcp(IP_TV, PORT, default_transport_timeout_s=9)
-            device.connect(rsa_keys=[signer], auth_timeout_s=5)
-
+            device = conectar_adb()
             device.shell("am force-stop com.globo.globotv")
             time.sleep(2)
             device.shell("am start -n com.globo.globotv/.maintv.MainActivity")
@@ -144,13 +118,141 @@ def abrir_globo():
 
             device.close()
         except Exception as err:
-            print(f"Erro no ADB: {err}")
+            print(f"Erro no ADB (Globo): {err}")
+
+    threading.Thread(target=executar_adb, daemon=True).start()
+
+
+def abrir_maxnet_base(device):
+    """Passos iniciais comuns para navegar até a lista de canais no MaxNet TV."""
+    device.shell("am force-stop com.exploudapps.maxnettv")
+    time.sleep(1)
+    device.shell("am start -n com.exploudapps.maxnettv/.ui.activities.SplashActivity")
+    time.sleep(8)
+
+    device.shell("input keyevent 66")  # OK
+    time.sleep(10)
+
+    device.shell("input keyevent 19")  # CIMA
+    time.sleep(1)
+    device.shell("input keyevent 66")  # OK
+    time.sleep(3)
+
+    device.shell("input keyevent 19")  # CIMA
+    time.sleep(1)
+    device.shell("input keyevent 19")  # CIMA
+    time.sleep(1)
+    device.shell("input keyevent 19")  # CIMA
+    time.sleep(1)
+    device.shell("input keyevent 66")  # OK
+    time.sleep(7)
+
+    device.shell("input keyevent 21")  # ESQUERDA
+    time.sleep(2)
+
+
+def abrir_record():
+    def executar_adb():
+        try:
+            print("Executando automação da Record no MaxNet TV...")
+            device = conectar_adb()
+            abrir_maxnet_base(device)
+
+            # Record: 3 cliques para a direita
+            device.shell("input keyevent 22")  # DIREITA 1
+            time.sleep(1)
+            device.shell("input keyevent 22")  # DIREITA 2
+            time.sleep(1)
+            device.shell("input keyevent 22")  # DIREITA 3
+            time.sleep(1)
+
+            device.shell("input keyevent 66")  # OK
+            time.sleep(5)
+            device.shell("input keyevent 66")  # OK
+            time.sleep(5)
+
+            device.close()
+        except Exception as err:
+            print(f"Erro no ADB (Record): {err}")
+
+    threading.Thread(target=executar_adb, daemon=True).start()
+
+
+def abrir_sbt():
+    def executar_adb():
+        try:
+            print("Executando automação do SBT no MaxNet TV...")
+            device = conectar_adb()
+            abrir_maxnet_base(device)
+
+            # SBT: 1 clique para a direita
+            device.shell("input keyevent 22")  # DIREITA 1
+            time.sleep(1)
+
+            device.shell("input keyevent 66")  # OK
+            time.sleep(5)
+            device.shell("input keyevent 66")  # OK
+            time.sleep(5)
+
+            device.close()
+        except Exception as err:
+            print(f"Erro no ADB (SBT): {err}")
+
+    threading.Thread(target=executar_adb, daemon=True).start()
+
+
+def abrir_band():
+    def executar_adb():
+        try:
+            print("Executando automação da Band no MaxNet TV...")
+            device = conectar_adb()
+            abrir_maxnet_base(device)
+
+            # Band: 2 cliques para a direita
+            device.shell("input keyevent 22")  # DIREITA 1
+            time.sleep(1)
+            device.shell("input keyevent 22")  # DIREITA 2
+            time.sleep(1)
+
+            device.shell("input keyevent 66")  # OK
+            time.sleep(5)
+            device.shell("input keyevent 66")  # OK
+            time.sleep(5)
+
+            device.close()
+        except Exception as err:
+            print(f"Erro no ADB (Band): {err}")
 
     threading.Thread(target=executar_adb, daemon=True).start()
 
 
 def abrir_redetv():
-    pass
+    def executar_adb():
+        try:
+            print("Executando automação da RedeTV no MaxNet TV...")
+            device = conectar_adb()
+            abrir_maxnet_base(device)
+
+            # RedeTV: 4 cliques para a direita
+            device.shell("input keyevent 22")  # DIREITA 1
+            time.sleep(1)
+            device.shell("input keyevent 22")  # DIREITA 2
+            time.sleep(1)
+            device.shell("input keyevent 22")  # DIREITA 3
+            time.sleep(1)
+            device.shell("input keyevent 22")  # DIREITA 4
+            time.sleep(1)
+
+            device.shell("input keyevent 66")  # OK
+            time.sleep(5)
+            device.shell("input keyevent 66")  # OK
+            time.sleep(5)
+
+            device.close()
+        except Exception as err:
+            print(f"Erro no ADB (RedeTV): {err}")
+
+    threading.Thread(target=executar_adb, daemon=True).start()
 
 
 def main(page: ft.Page):
@@ -164,7 +266,7 @@ def main(page: ft.Page):
     page.scroll = ft.ScrollMode.AUTO
     page.padding = ft.Padding(20, 48, 20, 16)
     
-    # Impede que a tela do celular apague/desligue enquanto o app estiver visível
+    # Ativação via keep_screen_on no nível da página
     page.keep_screen_on = True
 
     lista_jogos_container = ft.Column(spacing=10, scroll=ft.ScrollMode.AUTO)
@@ -194,10 +296,8 @@ def main(page: ft.Page):
         abrir_video_na_tv(url_video)
 
     def buscar_e_exibir_lives():
-        # 1. Manda a TV abrir a página do canal no YouTube Padrão
         abrir_canal_cazetv_na_tv()
 
-        # 2. Exibe o indicador de carregamento no celular
         lista_jogos_container.controls = [
             ft.Row(
                 [
@@ -210,7 +310,6 @@ def main(page: ft.Page):
         bs.open = True
         page.update()
 
-        # 3. Busca a lista de links via API em segundo plano
         def worker():
             lives = obter_lives_cazetv_api()
             lista_jogos_container.controls.clear()
@@ -242,6 +341,12 @@ def main(page: ft.Page):
             buscar_e_exibir_lives()
         elif canal == "Globo":
             abrir_globo()
+        elif canal == "Record":
+            abrir_record()
+        elif canal == "SBT":
+            abrir_sbt()
+        elif canal == "Band":
+            abrir_band()
         elif canal == "RedeTV":
             abrir_redetv()
 

@@ -50,6 +50,7 @@ def abrir_canal_cazetv_na_tv():
 
     threading.Thread(target=worker, daemon=True).start()
 
+
 def obter_lives_cazetv_api():
     """Busca diretamente na API do YouTube todas as transmissões ao vivo ativas no canal da CazéTV."""
     lives = []
@@ -162,6 +163,9 @@ def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.scroll = ft.ScrollMode.AUTO
     page.padding = ft.Padding(20, 48, 20, 16)
+    
+    # Impede que a tela do celular apague/desligue enquanto o app estiver visível
+    page.keep_screen_on = True
 
     lista_jogos_container = ft.Column(spacing=10, scroll=ft.ScrollMode.AUTO)
 

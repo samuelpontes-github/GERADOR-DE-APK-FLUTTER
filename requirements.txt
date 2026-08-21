@@ -1,14 +1,5 @@
 flet
 adb-shell
-google-api-python-client
-google-auth
-google-auth-httplib2
-google-auth-oauthlib
-httplib2
-pyasn1
-pyasn1-modules
 rsa
 certifi
 urllib3
-cachetools
-requests

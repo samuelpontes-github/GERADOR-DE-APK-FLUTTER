@@ -14,3 +14,8 @@ icon = "assets/icon.png"
 
 [tool.flet.flutter.dependencies]
 wakelock_plus = "^1.2.8"
+
+[tool.flet.android]
+permissions = [
+    "android.permission.WAKE_LOCK"
+]

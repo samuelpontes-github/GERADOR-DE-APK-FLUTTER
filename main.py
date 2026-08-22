@@ -266,8 +266,19 @@ def main(page: ft.Page):
     page.scroll = ft.ScrollMode.AUTO
     page.padding = ft.Padding(20, 48, 20, 16)
     
-    # Ativação via keep_screen_on no nível da página
-    page.keep_screen_on = True
+    # --- ATIVAÇÃO DO WAKELOCK DE FORMA SEGURA ---
+    # Instancia o Wakelock sem adicioná-lo aos controles visuais da página (evita o erro 'Unknown control')
+    wakelock = ft.Wakelock()
+
+    async def ativar_wakelock():
+        try:
+            await wakelock.enable()
+            print("Wakelock ativado com sucesso!")
+        except Exception as err:
+            print(f"Aviso Wakelock (esperado no Windows Desktop): {err}")
+
+    # Executa a tarefa assíncrona no loop de eventos do Flet
+    page.run_task(ativar_wakelock)
 
     lista_jogos_container = ft.Column(spacing=10, scroll=ft.ScrollMode.AUTO)
 

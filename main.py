@@ -12,7 +12,7 @@ from adb_shell.auth.sign_pythonrsa import PythonRSASigner
 YOUTUBE_API_KEY = "AIzaSyDV_xrdplJuun_HcFivLnIW-KPgpldb5pQ"
 IP_TV = "192.168.15.117"
 PORT = 5555
-CHANNEL_ID_CAZETV = "UClXz2Nus3ASfscB60dC5gxQ"
+CHANNEL_ID_CAZETV = "UCZiYbVptd3PVPf4f6eR6UaQ"
 
 
 def conectar_adb():

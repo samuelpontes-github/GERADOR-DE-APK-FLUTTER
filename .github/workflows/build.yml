@@ -32,7 +32,7 @@ jobs:
       - name: Instalar Android SDK
         uses: android-actions/setup-android@v4
 
-      - name: Instalar dependências de sistema
+      - name: Instalar dependências de sistema (Ninja e CMake)
         run: |
           sudo apt-get update
           sudo apt-get install -y ninja-build cmake git
@@ -48,12 +48,11 @@ jobs:
           pip install flet
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Gerar APK com Flet
+      - name: Gerar APK
         env:
-          FLET_CLI_YES: "true"
           ANDROID_HOME: /usr/local/lib/android/sdk
         run: |
-          flet build apk
+          flet build apk --yes
 
       - name: Disponibilizar APK para Download
         uses: actions/upload-artifact@v4

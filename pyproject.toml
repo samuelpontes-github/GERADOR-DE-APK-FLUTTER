@@ -20,3 +20,5 @@ wakelock_plus = "^1.2.8"
 permissions = [
     "android.permission.WAKE_LOCK"
 ]
+adaptive_icon_background = "#1a1d24"
+adaptive_icon_foreground = "assets/icon.png"

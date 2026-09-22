@@ -29,8 +29,11 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Instalar Android SDK
-        uses: android-actions/setup-android@v4
+      - name: Instalar Android SDK e Ferramentas
+        uses: android-actions/setup-android@v3
+
+      - name: Aceitar Licenças do Android SDK
+        run: yes | sdkmanager --licenses || true
 
       - name: Instalar dependências de sistema (Ninja e CMake)
         run: |
@@ -38,21 +41,17 @@ jobs:
           sudo apt-get install -y ninja-build cmake git
           git config --global --add safe.directory "*"
 
-      - name: Aceitar Licenças do Android SDK
-        run: |
-          yes | sdkmanager --licenses || true
-
-      - name: Instalar Flet e Dependências do Projeto
+      - name: Instalar Flet e Dependências
         run: |
           python -m pip install --upgrade pip
           pip install flet
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Gerar APK
         env:
+          FLET_CLI_YES: "true"
           ANDROID_HOME: /usr/local/lib/android/sdk
         run: |
-          flet build apk --yes
+          yes | flet build apk
 
       - name: Disponibilizar APK para Download
         uses: actions/upload-artifact@v4

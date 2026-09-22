@@ -3,9 +3,10 @@ name = "Auto TV"
 version = "0.1.0"
 dependencies = [
     "flet",
+    "requests",
+    "beautifulsoup4",
     "adb-shell",
-    "certifi",
-    "rsa",
+    "rsa"
 ]
 
 [tool.flet]

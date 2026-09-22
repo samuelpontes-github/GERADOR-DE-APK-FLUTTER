@@ -1,5 +1,5 @@
 flet
+requests
+beautifulsoup4
 adb-shell
 rsa
-certifi
-urllib3

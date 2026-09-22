@@ -30,10 +30,9 @@ jobs:
           channel: 'stable'
 
       - name: Instalar Android SDK e Ferramentas
-        uses: android-actions/setup-android@v3
-
-      - name: Aceitar Licenças do Android SDK
-        run: yes | sdkmanager --licenses || true
+        uses: android-actions/setup-android@v4
+        with:
+          accept-android-sdk-licenses: true
 
       - name: Instalar dependências de sistema (Ninja e CMake)
         run: |

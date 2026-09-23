@@ -24,11 +24,6 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
-      - name: Instalar Flutter SDK
-        uses: subosito/flutter-action@v2
-        with:
-          channel: "stable"
-
       - name: Instalar dependências do sistema
         run: |
           sudo apt-get update
@@ -39,10 +34,8 @@ jobs:
         run: pip install flet
 
       - name: Gerar APK
-        env:
-          FLET_CLI_YES: "true"
         run: |
-          flet build apk --android-adaptive-icon-background "#111827"
+          flet build apk --yes --android-adaptive-icon-background "#111827"
 
       - name: Disponibilizar APK para Download
         uses: actions/upload-artifact@v4

@@ -6,6 +6,7 @@ dependencies = [
     "adb-shell",
     "certifi",
     "rsa",
+    "requests",
 ]
 
 [tool.flet]

@@ -3,20 +3,21 @@ name = "Auto TV"
 version = "0.1.0"
 dependencies = [
     "flet",
-    "requests",
-    "beautifulsoup4",
     "adb-shell",
+    "certifi",
     "rsa",
 ]
 
 [tool.flet]
 product_name = "Auto TV"
 icon = "assets/icon.png"
+icon_background = "#111827"
 
 [tool.flet.flutter.dependencies]
 wakelock_plus = "^1.2.8"
 
 [tool.flet.android]
+adaptive_icon_background = "#111827"
 permissions = [
     "android.permission.WAKE_LOCK"
 ]

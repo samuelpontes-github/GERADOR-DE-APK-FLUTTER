@@ -182,16 +182,17 @@ def abrir_record():
             device = conectar_adb()
             abrir_maxnet_base(device)
 
-            device.shell("input keyevent 22")
+            # Record: 3 cliques para a direita
+            device.shell("input keyevent 22")  # DIREITA 1
             time.sleep(1)
-            device.shell("input keyevent 22")
+            device.shell("input keyevent 22")  # DIREITA 2
             time.sleep(1)
-            device.shell("input keyevent 22")
+            device.shell("input keyevent 22")  # DIREITA 3
             time.sleep(1)
 
-            device.shell("input keyevent 66")
+            device.shell("input keyevent 66")  # OK
             time.sleep(5)
-            device.shell("input keyevent 66")
+            device.shell("input keyevent 66")  # OK
             time.sleep(5)
 
             device.close()
@@ -208,12 +209,13 @@ def abrir_sbt():
             device = conectar_adb()
             abrir_maxnet_base(device)
 
-            device.shell("input keyevent 22")
+            # SBT: 1 clique para a direita
+            device.shell("input keyevent 22")  # DIREITA 1
             time.sleep(1)
 
-            device.shell("input keyevent 66")
+            device.shell("input keyevent 66")  # OK
             time.sleep(5)
-            device.shell("input keyevent 66")
+            device.shell("input keyevent 66")  # OK
             time.sleep(5)
 
             device.close()
@@ -230,14 +232,15 @@ def abrir_band():
             device = conectar_adb()
             abrir_maxnet_base(device)
 
-            device.shell("input keyevent 22")
+            # Band: 2 cliques para a direita
+            device.shell("input keyevent 22")  # DIREITA 1
             time.sleep(1)
-            device.shell("input keyevent 22")
+            device.shell("input keyevent 22")  # DIREITA 2
             time.sleep(1)
 
-            device.shell("input keyevent 66")
+            device.shell("input keyevent 66")  # OK
             time.sleep(5)
-            device.shell("input keyevent 66")
+            device.shell("input keyevent 66")  # OK
             time.sleep(5)
 
             device.close()
@@ -254,18 +257,19 @@ def abrir_redetv():
             device = conectar_adb()
             abrir_maxnet_base(device)
 
-            device.shell("input keyevent 22")
+            # RedeTV: 4 cliques para a direita
+            device.shell("input keyevent 22")  # DIREITA 1
             time.sleep(1)
-            device.shell("input keyevent 22")
+            device.shell("input keyevent 22")  # DIREITA 2
             time.sleep(1)
-            device.shell("input keyevent 22")
+            device.shell("input keyevent 22")  # DIREITA 3
             time.sleep(1)
-            device.shell("input keyevent 22")
+            device.shell("input keyevent 22")  # DIREITA 4
             time.sleep(1)
 
-            device.shell("input keyevent 66")
+            device.shell("input keyevent 66")  # OK
             time.sleep(5)
-            device.shell("input keyevent 66")
+            device.shell("input keyevent 66")  # OK
             time.sleep(5)
 
             device.close()

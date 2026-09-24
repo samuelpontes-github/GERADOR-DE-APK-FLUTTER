@@ -26,7 +26,7 @@ MODEL_NAME = "meta/llama-3.2-11b-vision-instruct"
 INVOKE_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 
 BASE_URL = "https://www.livesoccertv.com"
-SCHEDULE_URL = "https://www.livesoccertv.com/pt/schedules/2026-10-07/"
+SCHEDULE_URL = "https://www.livesoccertv.com/pt/schedules/"
 CORINTHIANS_URL = "https://www.livesoccertv.com/pt/teams/brazil/corinthians/"
 
 HEADERS = {
